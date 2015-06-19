@@ -1,3 +1,8 @@
+
+// http://www.geocities.jp/zattouka/GarageHouse/micon/Arduino/RTC/RTC.htm
+// https://github.com/adafruit/DHT-sensor-library
+// https://learn.adafruit.com/dht
+
 /*******************************************************************************
 *  Inter.pde - ＲＴＣ－８５６４ＮＢを使ったテストサンプル                      *
 *                                                                              *
@@ -23,11 +28,11 @@
 // 本当なら，割込み番号を入れたら端子も機種毎の切り替えを効かせたいが，とりあえず固定指定
 //
 // 手持ちのMega2560では，INT0,1が動作しなかったため，大きい番号の割込みを利用
-#define INT_NUMBER 5
-#define PIN_NUMBER 18
+//#define INT_NUMBER 5
+//#define PIN_NUMBER 18
 // UNOはINT0,1が動作するため，こちらを利用
-//#define INT_NUMBER 0
-//#define PIN_NUMBER 2
+#define INT_NUMBER 0
+#define PIN_NUMBER 2
 //
 //　端末が眠る場合の眠りの深さの指定
 //
