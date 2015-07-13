@@ -135,8 +135,8 @@ GPLv2にしときます．
 [rtc]: <http://akizukidenshi.com/catalog/g/gI-00233/> "3564NB(秋月電子通商)"
 
 <!--イメージファイル-->
-[system]: system.jpg "本体写真"
-[breadboard]: breadboard.jpg "ブレッドボード利用時の配線イメージ"
-[circuit]: circuit.jpg "回路図"
+[system]: Doc/fig/system.jpg "本体写真"
+[breadboard]: Doc/fig/breadboard.jpg "ブレッドボード利用時の配線イメージ"
+[circuit]: Doc/fig/circuit.jpg "回路図"
 
 
