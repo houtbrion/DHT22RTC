@@ -14,15 +14,14 @@ CPUのウォッチドッグタイマはタイマが発火する期間が非常�
 その時，手頃なarduino用RTCを探した所，[8564NB][rtc]を秋月電子の通販ページで
 発見したため，適当なライブラリを探した所，[きむ茶さんのページ][kimcha]に
 行き着いたので，それを使ってまず練習してみたのがこのプログラム．
+ただし，きむ茶さんのライブラリは使いにくい，M0では使えないなどあったため，[改造したバージョン][skRTClib]を利用しています．
 
 センサもDHT11は非常に精度が悪かったので，とりあえず多少ましなものとして
 [DHT22][DHT22]を秋月電子で購入し，adafruitの[DHT用のライブラリ][dht]を
 使っている．
 
 きむ茶さん，adafruit共に，ライブラリやサンプルプログラムにライセンスが明示されていないので
-ライセンス条件は不明だけど，自分が作った分(そんなものあるのかというのは
-おいておいて)に関しては，Arduinoの基本のライブラリはLGPLv2とのことだったので
-GPLv2にしときます．
+ライセンス条件は不明なので，とりあえず保留しときます．
 
 ライセンスが気になる用途に利用される方は，「adafruit」と「きむ茶さん」に
 問い合わせてください．
@@ -30,7 +29,7 @@ GPLv2にしときます．
 # 動作環境
 
 ## 用意した部品
-* 本体 : [Arduino Uno][Uno]と[Arduino Mega 2560][Mega2560]で試しました．
+* 本体 : [Arduino Uno][Uno]と[Arduino Mega 2560][Mega2560]で試しました．[Arduino M0 pro][M0pro]は試行錯誤中．
 * 温湿度センサ : [DHT22][DHT22]
 * 箱 : [Arduino用ケース][case]
 
@@ -44,7 +43,7 @@ GPLv2にしときます．
 ## 開発環境と各種ライブラリ
 * [Arduino開発環境][ide] : バージョン1.6.4
 * [DHTセンサのライブラリ][dht]
-* [きむ茶さんのRTCライブラリ][skRTClib]
+* [きむ茶さんのRTCライブラリを改造したバージョン][skRTClib]
 
 # 内部動作の特徴
 タイマで待ち合わせしている休止状態の期間は，CPUを低電力モードにして
@@ -125,11 +124,13 @@ GPLv2にしときます．
 <!--開発環境と各種ライブラリ-->
 [ide]: <http://www.arduino.cc/en/Main/Software> "Arduino開発環境"
 [dht]: <https://github.com/adafruit/DHT-sensor-library> "DHTセンサのライブラリ"
-[skRTClib]: <http://www.geocities.jp/zattouka/GarageHouse/micon/Arduino/RTC/skRTClib.lzh> "きむ茶さんのRTCライブラリ"
+[skRTClibOrig]: <http://www.geocities.jp/zattouka/GarageHouse/micon/Arduino/RTC/skRTClib.lzh> "きむ茶さんのRTCライブラリ"
+[skRTClib]: <https://github.com/houtbrion/skRTClib> "きむ茶さんのRTCライブラリを改造したバージョン"
 
 <!--ハード関連-->
 [Uno]: <http://www.arduino.cc/en/Main/ArduinoBoardUno> "Arduino Uno"
 [Mega2560]: <http://www.arduino.cc/en/Main/ArduinoBoardMega2560> "Arduino Mega 2560"
+[M0pro]: <http://www.arduino.org/products/arduino-m0-pro> "Arduino M0 pro"
 [DHT22]: <http://akizukidenshi.com/catalog/g/gM-07002/> "DHT22(秋月電子通商)"
 [case]: <https://www.sengoku.co.jp/mod/sgk\_cart/detail.php?code=EEHD-4CLA> "Arduino用ケース(千石電商)"
 [rtc]: <http://akizukidenshi.com/catalog/g/gI-00233/> "3564NB(秋月電子通商)"

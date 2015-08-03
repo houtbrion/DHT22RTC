@@ -1,32 +1,28 @@
-
-// http://www.geocities.jp/zattouka/GarageHouse/micon/Arduino/RTC/RTC.htm
-// https://github.com/adafruit/DHT-sensor-library
-// https://learn.adafruit.com/dht
-
-/*******************************************************************************
-*  Inter.pde - ＲＴＣ－８５６４ＮＢを使ったテストサンプル                      *
-*                                                                              *
-*  RTCからの１秒毎割り込み信号のタイミングでRTCから時刻を読み取って表示        *
-*  定周期タイマー機能も起動後、１０秒間隔で出力し２分後に終了する              *
-* ============================================================================ *
-*  VERSION DATE        BY                    CHANGE/COMMENT                    *
-* ---------------------------------------------------------------------------- *
-*  1.00    2012-01-15  きむ茶工房(きむしげ)  Create                            *
-*******************************************************************************/
-
+/*
+ * Arduino M0 proでは，CPUの低電力モードが利用できないため，以下の定義を外す
+ */
 //#define USE_SLEEP
-//
+
+/*
+ * DHTセンサで温度・湿度を使うか否かと，DHTセンサをつなぐピンの指定
+ */
 #define USE_DHT
 #define DHTPIN 5     // what pin we're connected to
 
-// Uncomment whatever type you're using!
+
+/*
+ * 利用するDHTセンサの選択
+ */
 //#define DHTTYPE DHT11   // DHT 11 
 #define DHTTYPE DHT22   // DHT 22  (AM2302)
 //#define DHTTYPE DHT21   // DHT 21 (AM2301)
 
-// RTCからarduinoに割込みを上げる端子と割込み番号の指定
-// 本当なら，割込み番号を入れたら端子も機種毎の切り替えを効かせたいが，とりあえず固定指定
-//
+/*
+ *
+ * RTCからarduinoに割込みを上げる端子と割込み番号の指定
+ * 本当なら，割込み番号を入れたら端子も機種毎の切り替えを効かせたいが，とりあえず固定指定
+ */
+
 // 手持ちのMega2560では，INT0,1が動作しなかったため，大きい番号の割込みを利用
 //#define INT_NUMBER 5
 //#define PIN_NUMBER 18
@@ -35,9 +31,9 @@
 #define PIN_NUMBER 2
 
 
-//
-//　端末が眠る場合の眠りの深さの指定
-//
+/*
+ * 端末が眠る場合の眠りの深さの指定
+ */
 #ifdef USE_SLEEP
 //#define STANDBY_MODE SLEEP_MODE_IDLE
 //#define STANDBY_MODE SLEEP_MODE_ADC
@@ -47,9 +43,10 @@
 #else
 #define STANDBY_MODE 0
 #endif /* USE_SLEEP */
-//
-// 端末が眠る期間の指定
-//
+
+/*
+ * 端末が眠る期間の指定
+ */
 #define SLEEP_DURATION 10 //単位の10倍
 //#define SLEEP_UNIT 0 // 244.14us単位
 //#define SLEEP_UNIT 1 //15.625ms単位
@@ -57,9 +54,9 @@
 //#define SLEEP_UNIT 3 //分単位
 
 
-//
-// RTC8564用のライブラリを使うためのインクルードのロード
-//
+/*
+ * 各種のインクルードファイルのロード
+ */
 #include <Wire.h>
 #include <skRTClib.h>
 
@@ -67,16 +64,14 @@
 #include <avr/sleep.h>
 #endif /* USE_SLEEP */
 
-
 #include <stdio.h>
 #include <DHT.h>
 
 /*
- * DHT関係の定義
+ * DHT関係の定義とAdafruitの注意事項
  */
 
-
-// Connect pin 1 (on the left) of the sensor to +5V
+// Connect pin 1 (on the left) of the sensor to +5V  (3V動作のマシンでは，センサの電源端子には3Vを入力)
 // NOTE: If using a board with 3.3V logic like an Arduino Due connect pin 1
 // to 3.3V instead of 5V!
 // Connect pin 2 of the sensor to whatever your DHTPIN is
@@ -84,7 +79,10 @@
 // Connect a 10K resistor from pin 2 (data) to pin 1 (power) of the sensor
 
 // Initialize DHT sensor for normal 16mhz Arduino
+// Unoなどは以下の関数を利用
+//
 //DHT dht(DHTPIN, DHTTYPE);
+//
 // NOTE: For working with a faster chip, like an Arduino Due or Teensy, you
 // might need to increase the threshold for cycle counts considered a 1 or 0.
 // You can do this by passing a 3rd parameter for this threshold.  It's a bit
@@ -92,8 +90,12 @@
 // higher the value.  The default for a 16mhz AVR is a value of 6.  For an
 // Arduino Due that runs at 84mhz a value of 30 works.
 // Example to initialize DHT sensor for Arduino Due:
+//
+// Dueの例
+//
 //DHT dht(DHTPIN, DHTTYPE, 30);
-// arduino M0 pro
+//
+// arduino M0 proの場合
 DHT dht(DHTPIN, DHTTYPE,18);
 
 static FILE uartout;
@@ -106,9 +108,9 @@ static int uart_putchar (char c, FILE *stream) {
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// RTC(CLKOUT)からの外部割込みで処理される関数
-////////////////////////////////////////////////////////////////////////////////
+/*
+ * RTC(CLKOUT)からの外部割込みで実行される関数
+ */
 void InterRTC()
 {
   skRTC.InterFlag = 1 ;
@@ -117,9 +119,9 @@ void InterRTC()
 
 
 
-/*******************************************************************************
-*  電源起動時とリセットの時だけのみ処理される関数(初期化と設定処理)            *
-*******************************************************************************/
+/*
+ * システム初期化関数
+ */
 void setup()
 {
   int ans ;
@@ -137,9 +139,10 @@ void setup()
   }
   skRTC.SetTimer(SLEEP_UNIT,SLEEP_DURATION) ;
 }
-/*******************************************************************************
-*  繰り返し実行される処理の関数(メインの処理)                                  *
-*******************************************************************************/
+
+/*
+ * メインループ
+ */
 void loop()
 {
   byte tm[7] ; 
@@ -171,6 +174,9 @@ void loop()
   }
 }
 
+/*
+ * 端末のCPUを寝かせる(低電力モードに設定する)処理
+ */
 void goodNight(int i) {
   Serial.println("  Good Night");
   delay(100);
