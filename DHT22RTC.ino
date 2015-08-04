@@ -2,6 +2,7 @@
  * Arduino M0 proでは，CPUの低電力モードが利用できないため，以下の定義を外す
  */
 //#define USE_SLEEP
+#define NO_FDEV_SETUP
 
 /*
  * DHTセンサで温度・湿度を使うか否かと，DHTセンサをつなぐピンの指定
@@ -27,8 +28,13 @@
 //#define INT_NUMBER 5
 //#define PIN_NUMBER 18
 // UNOはINT0,1が動作するため，こちらを利用
-#define INT_NUMBER 0
-#define PIN_NUMBER 2
+//#define INT_NUMBER 0
+//#define PIN_NUMBER 2
+// M0 pro http://www.geocities.jp/zattouka/GarageHouse/micon/Arduino/Zero/gaiyo.htm
+//#define INT_NUMBER 9
+//#define PIN_NUMBER 3
+#define INT_NUMBER 6
+#define PIN_NUMBER 8
 
 
 /*
@@ -47,7 +53,7 @@
 /*
  * 端末が眠る期間の指定
  */
-#define SLEEP_DURATION 10 //単位の10倍
+#define SLEEP_DURATION 5 //単位の10倍
 //#define SLEEP_UNIT 0 // 244.14us単位
 //#define SLEEP_UNIT 1 //15.625ms単位
 #define SLEEP_UNIT 2 //秒単位
@@ -98,6 +104,7 @@
 // arduino M0 proの場合
 DHT dht(DHTPIN, DHTTYPE,18);
 
+#ifndef NO_FDEV_SETUP
 static FILE uartout;
 
 static int uart_putchar (char c, FILE *stream) {
@@ -107,7 +114,7 @@ static int uart_putchar (char c, FILE *stream) {
     return -1;
   }
 }
-
+#endif /* NO_FDEV_SETUP */
 /*
  * RTC(CLKOUT)からの外部割込みで実行される関数
  */
@@ -125,8 +132,10 @@ void InterRTC()
 void setup()
 {
   int ans ;
+#ifndef NO_FDEV_SETUP
   fdev_setup_stream (&uartout, uart_putchar, NULL, _FDEV_SETUP_WRITE);
   stdout = &uartout;
+#endif /* NO_FDEV_SETUP */
   pinMode( PIN_NUMBER, INPUT);    // 後の項で使用
   Serial.begin(9600) ;                    // シリアル通信の初期化
   ans = skRTC.begin(PIN_NUMBER,INT_NUMBER,InterRTC,12,1,10,2,15,30,0) ;  // 2012/01/10 火 15:30:00 でRTCを初期化する
@@ -179,14 +188,16 @@ void loop()
  */
 void goodNight(int i) {
   Serial.println("  Good Night");
-  delay(100);
 #ifdef USE_SLEEP
+  delay(100);
   noInterrupts();
   set_sleep_mode(i);
   sleep_enable();
   interrupts();
   sleep_cpu();
   sleep_disable();
+#else /*USE_SLEEP*/
+  delay(5000);
 #endif /*USE_SLEEP*/
 }
 
